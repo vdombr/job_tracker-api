@@ -1,4 +1,4 @@
-FROM mrvold/rivulet:latest
+FROM rivulet:devel
 RUN apk add --no-cache postgresql-dev libpq
 
 WORKDIR /app
