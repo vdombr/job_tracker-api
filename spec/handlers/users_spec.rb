@@ -1,7 +1,5 @@
 require 'rivulet_helper'
 
-require 'pry'
-
 RSpec.describe Handlers::Users::Handler do
   subject { described_class.new }
 
@@ -13,7 +11,7 @@ RSpec.describe Handlers::Users::Handler do
     DatabaseCleaner[:sequel].clean
   end
 
-  describe '#create' do
+  describe 'POST #create' do
     let(:result) { subject.send(:create, input) }
 
     context 'with valid params' do
@@ -133,7 +131,7 @@ RSpec.describe Handlers::Users::Handler do
     end
   end
 
-  describe '#show' do
+  describe 'GET #show' do
     let(:result) { subject.send(:show, input) }
     let(:input) do
       {
@@ -204,7 +202,7 @@ RSpec.describe Handlers::Users::Handler do
     end
   end
 
-  describe '#sign_in' do
+  describe 'POST #sign_in' do
     let(:result) { subject.send(:sign_in, input) }
 
     context 'with valid params' do
