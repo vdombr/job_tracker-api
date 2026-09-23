@@ -2,7 +2,7 @@ require 'openssl'
 require 'securerandom'
 
 module Services
-  module Shared
+  module Users
     module Utils
       class HashPassword
         ITERATIONS = 100_000

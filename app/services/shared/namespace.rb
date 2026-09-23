@@ -7,7 +7,6 @@ module Services
       end
 
       namespace('utils') do
-        register('hash_password') { Services::Shared::Utils::HashPassword.new }
       end
     end
   end

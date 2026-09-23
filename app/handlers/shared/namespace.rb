@@ -6,7 +6,7 @@ module Handlers
       end
 
       namespace('utils') do
-        register('verify_token') { Handlers::Shared::Utils::VerifyToken.new }
+        register('token_util') { Handlers::Shared::Utils::TokenUtil.new }
       end
     end
   end

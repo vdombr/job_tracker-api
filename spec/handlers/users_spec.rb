@@ -203,4 +203,95 @@ RSpec.describe Handlers::Users::Handler do
       end
     end
   end
+
+  describe '#sign_in' do
+    let(:result) { subject.send(:sign_in, input) }
+
+    context 'with valid params' do
+      let(:password_hash) do
+        Services::Users::Utils::HashPassword.new.call('abc123')
+      end
+      let(:user) do
+        User.create(
+          name: 'John Doe',
+          email: 'user@example.com',
+          password_hash: password_hash
+        )
+      end
+      let(:input) do
+        {
+          params: {
+            email: email,
+            password: password
+          },
+          context: {}
+        }
+      end
+
+      context 'when email found and password is correct' do
+        let(:email) { user.email }
+        let(:password) { 'abc123' }
+
+        it 'response with success' do
+          expect(result).to be_success
+        end
+
+        it 'returns ok status' do
+          expect(result.value!.status).to eq 200
+        end
+
+        xit 'returns token' do
+        end
+      end
+
+      context 'when email not found' do
+        let(:email) { 'foo@example.com' }
+        let(:password) { 'abc123' }
+
+        it 'response with failure' do
+          expect(result).to be_failure
+        end
+
+        it 'returns not found status' do
+          expect(result.failure.status).to eq 404
+        end
+      end
+
+      context 'when password not match' do
+        let(:email) { user.email }
+        let(:password) { 'qwe123' }
+
+        it 'response with failure' do
+          expect(result).to be_failure
+        end
+
+        it 'returns not found status' do
+          expect(result.failure.status).to eq 404
+        end
+      end
+    end
+
+    context 'with missing params' do
+      let(:input) do
+        {
+          params: {
+            email: 'user@example.com'
+          },
+          context: {}
+        }
+      end
+
+      it 'response with failure' do
+        expect(result).to be_failure
+      end
+
+      it 'returns error message' do
+        expect(result.failure.body).to eq(
+          errors: [
+            { field: :password, message: ['password must be filled'] }
+          ]
+        )
+      end
+    end
+  end
 end

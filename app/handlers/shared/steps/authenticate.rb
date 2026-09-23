@@ -3,7 +3,7 @@ module Handlers
     module Steps
       class Authenticate < Rivulet::Step
         include Import[
-          verify_token: 'shared.utils.verify_token'
+          token_util: 'shared.utils.token_util'
         ]
 
         def call(input)
@@ -11,7 +11,7 @@ module Handlers
           token = header.sub(/\ABearer\s+/i, '')
           return unauthorized if token.empty?
 
-          payload = verify_token.call(token)
+          payload = token_util.verify(token)
           return unauthorized unless payload && payload['sub']
 
           input[:context][:current_user] = payload['sub']

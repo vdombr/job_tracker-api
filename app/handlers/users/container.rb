@@ -5,13 +5,16 @@ module Handlers
       import Handlers::Shared::Namespace
 
       namespace('operations') do
-        register('create') { Handlers::Users::Operations::Create.new }
-        register('show')   { Handlers::Users::Operations::Show.new }
+        register('create')  { Handlers::Users::Operations::Create.new }
+        register('show')    { Handlers::Users::Operations::Show.new }
+        register('sign_in') { Handlers::Users::Operations::SignIn.new }
       end
 
       namespace('steps') do
-        register('get_user') { Handlers::Users::Steps::GetUser.new }
-        register('create_user') { Handlers::Users::Steps::CreateUser.new }
+        register('create_user')  { Handlers::Users::Steps::CreateUser.new }
+        register('create_token') { Handlers::Users::Steps::CreateToken.new }
+        register('get_user')     { Handlers::Users::Steps::GetUser.new }
+        register('sign_in_user') { Handlers::Users::Steps::SignInUser.new }
       end
     end
   end

@@ -6,7 +6,9 @@ module Handlers
           result = Services[:users].get_user(
             resource: User,
             attributes: {
-              id: input[:context][:current_user]
+              find_by: {
+                id: input[:context][:current_user]
+              }
             }
           )
 

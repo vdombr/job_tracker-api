@@ -3,7 +3,7 @@ module Services
     module Steps
       class CreateUser < Rivulet::Step
         include Import[
-          hash_password: 'shared.utils.hash_password'
+          hash_password: 'utils.hash_password'
         ]
 
         def call(input)
