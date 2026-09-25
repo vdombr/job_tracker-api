@@ -13,6 +13,9 @@
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'factory_bot'
+require 'faker'
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -95,4 +98,15 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+
+  config.include FactoryBot::Syntax::Methods
+
+  config.before(:suite) do
+    FactoryBot.find_definitions
+
+    # Changes the default persistence strategy for all factories
+    FactoryBot.define do
+      to_create { |instance| instance.save(raise_on_failure: true) }
+    end
+  end
 end

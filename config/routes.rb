@@ -5,4 +5,6 @@ Rivulet.routes.draw do
 
   get  '/user',  to: 'users#show'
   post '/user',  to: 'users#create'
+
+  get   '/job_apps',     to: 'job_apps#index'
 end

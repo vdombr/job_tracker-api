@@ -1,0 +1,156 @@
+require 'rivulet_helper'
+
+RSpec.describe Handlers::JobApps::Handler do
+  subject { described_class.new }
+
+  before do
+    DatabaseCleaner[:sequel].start
+  end
+
+  after do
+    DatabaseCleaner[:sequel].clean
+  end
+
+  describe 'GET #index' do
+    let(:result) { subject.send(:index, input) }
+
+    context 'with valid params' do
+      let(:user) do
+        User.create(
+          name: 'John Doe',
+          email: 'user@example.com',
+          password_hash: 'abc123'
+        )
+      end
+      let(:params) { {} }
+      let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+      let(:input) do
+        {
+          params: params,
+          context: {
+            headers: {
+              'Authorization' => auth_token
+            }
+          }
+        }
+      end
+
+      let!(:applied_job) do
+        create(:job_app, user_id: user.id, current_stage: 'applied')
+      end
+      let!(:ghosted_job) do
+        create(:job_app, user_id: user.id, current_stage: 'ghosted')
+      end
+
+      it 'response with success' do
+        expect(result).to be_success
+      end
+
+      it 'returns ok status' do
+        expect(result.value!.status).to eq 200
+      end
+
+      it 'returns job apps' do
+        expect(result.value!.body).to eq(
+          data: [
+            {
+              id: applied_job.id,
+              company: applied_job.company,
+              position: applied_job.position,
+              url: applied_job.url,
+              hr_contact: applied_job.hr_contact,
+              commentary: applied_job.commentary,
+              current_stage: applied_job.current_stage,
+              applied_at: applied_job.applied_at
+            },
+            {
+              id: ghosted_job.id,
+              company: ghosted_job.company,
+              position: ghosted_job.position,
+              url: ghosted_job.url,
+              hr_contact: ghosted_job.hr_contact,
+              commentary: ghosted_job.commentary,
+              current_stage: ghosted_job.current_stage,
+              applied_at: ghosted_job.applied_at
+            }
+          ],
+          meta: {
+            paginate: {
+              limit: 25,
+              next_page: nil,
+              page: 1,
+              prev_page: nil,
+              total_pages: 1,
+              total_records: 2
+            }
+          }
+        )
+      end
+
+      context 'when filtered by stage' do
+        let(:params) do
+          {
+            filter_by: {
+              current_stage: 'offer'
+            }
+          }
+        end
+
+        let!(:offered_job) do
+          create(:job_app, user_id: user.id, current_stage: 'offer')
+        end
+
+        it 'returns list with offered job app' do
+          expect(result.value!.body).to eq(
+            data: [
+              {
+                id: offered_job.id,
+                company: offered_job.company,
+                position: offered_job.position,
+                url: offered_job.url,
+                hr_contact: offered_job.hr_contact,
+                commentary: offered_job.commentary,
+                current_stage: offered_job.current_stage,
+                applied_at: offered_job.applied_at
+              }
+            ],
+            meta: {
+              paginate: {
+                limit: 25,
+                next_page: nil,
+                page: 1,
+                prev_page: nil,
+                total_pages: 1,
+                total_records: 1
+              }
+            }
+          )
+        end
+      end
+
+      context 'when paginated' do
+        let(:params) do
+          {
+            paginate: {
+              limit: 1
+            }
+          }
+        end
+
+        it 'returns list with one job app' do
+          expect(result.value!.body[:data].size).to eq 1
+          expect(result.value!.body[:meta]).to eq(
+            paginate: {
+              limit: 1,
+              next_page: 2,
+              page: 1,
+              prev_page: nil,
+              total_pages: 2,
+              total_records: 2
+            }
+          )
+        end
+      end
+    end
+  end
+end
