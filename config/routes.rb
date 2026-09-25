@@ -8,4 +8,5 @@ Rivulet.routes.draw do
 
   get   '/job_apps',     to: 'job_apps#index'
   post  '/job_apps',     to: 'job_apps#create'
+  patch '/job_apps/:id', to: 'job_apps#update'
 end

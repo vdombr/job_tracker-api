@@ -7,9 +7,11 @@ module Services
       namespace('operations') do
         register('list_job_apps')  { Services::JobApps::Operations::ListJobApps.new }
         register('create_job_app') { Services::JobApps::Operations::CreateJobApp.new }
+        register('update_job_app') { Services::JobApps::Operations::UpdateJobApp.new }
       end
 
       namespace('steps') do
+        register('update_job_app') { Services::JobApps::Steps::UpdateJobApp.new }
         register('create_job_app') { Services::JobApps::Steps::CreateJobApp.new }
         register('filter')         { Services::JobApps::Steps::Filter.new }
       end
@@ -17,6 +19,7 @@ module Services
       namespace('contracts') do
         register('list_job_apps')  { Services::JobApps::Contracts::ListJobApps.new }
         register('create_job_app') { Services::JobApps::Contracts::CreateJobApp.new }
+        register('update_job_app') { Services::JobApps::Contracts::UpdateJobApp.new }
       end
 
       namespace('projections') do

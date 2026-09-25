@@ -341,4 +341,155 @@ RSpec.describe Handlers::JobApps::Handler do
       end
     end
   end
+
+  describe 'PATCH #update' do
+    let(:result) { subject.send(:update, input) }
+
+    let(:params) { {} }
+    let(:input) do
+      {
+        params: params,
+        context: {
+          headers: {
+            'Authorization' => auth_token
+          }
+        }
+      }
+    end
+
+    context 'when request authenticated' do
+      let(:user) do
+        User.create(
+          name: 'John Doe',
+          email: 'user@example.com',
+          password_hash: 'abc123'
+        )
+      end
+      let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+
+      context 'with valid params' do
+        let(:job_app) { create(:job_app, user_id: user.id) }
+        let(:job_app_id) { job_app.id }
+        let(:params) do
+          {
+            id: job_app_id,
+            company: job_app.company,
+            position: job_app.position,
+            applied_at: job_app.applied_at,
+            url: 'http://acme.org'
+          }
+        end
+
+        it 'response with success' do
+          expect(result).to be_success
+        end
+
+        it 'returns ok status' do
+          expect(result.value!.status).to eq 200
+        end
+
+        it 'response with updated job application' do
+          expect(result.value!.body).to eq(
+            data: {
+              id: job_app.id,
+              company: job_app.company,
+              position: job_app.position,
+              url: 'http://acme.org',
+              hr_contact: job_app.hr_contact,
+              commentary: job_app.commentary,
+              current_stage: job_app.current_stage,
+              applied_at: job_app.applied_at
+            },
+            meta: {}
+          )
+        end
+
+        context 'when user trying to update job application of someone else' do
+          let(:user2) do
+            User.create(
+              name: 'Jane Doe',
+              email: 'j.doe@example.com',
+              password_hash: 'abc123'
+            )
+          end
+          let(:job_app2) { create(:job_app, user_id: user2.id) }
+          let(:job_app_id) { job_app2.id }
+
+          it 'response with failure' do
+            expect(result).to be_failure
+          end
+
+          it 'returns not found status' do
+            expect(result.failure.status).to eq 404
+          end
+        end
+      end
+
+      context 'with invalid params' do
+        let(:job_app) { create(:job_app, user_id: user.id) }
+        let(:params) do
+          {
+            id: job_app.id,
+            company: job_app.company,
+            position: job_app.position,
+            applied_at: 'invalid date'
+          }
+        end
+
+        it 'response with failure' do
+          expect(result).to be_failure
+        end
+
+        it 'returns unprocessable entity status' do
+          expect(result.failure.status).to eq 422
+        end
+
+        it 'returns unprocessable entity status' do
+          expect(result.failure.body).to eq(
+            errors: [
+              { field: :applied_at, message: ['applied_at must be a date'] }
+            ]
+          )
+        end
+      end
+
+      context 'with missing params' do
+        let(:params) do
+          {
+            company: 'Acme'
+          }
+        end
+
+        it 'response with failure' do
+          expect(result).to be_failure
+        end
+
+        it 'returns unprocessable entity status' do
+          expect(result.failure.status).to eq 422
+        end
+
+        it 'returns unprocessable entity status' do
+          expect(result.failure.body).to eq(
+            errors: [
+              { field: :id, message: ['id is missing'] },
+              { field: :position, message: ['position is missing'] },
+              { field: :applied_at, message: ['applied_at is missing'] }
+            ]
+          )
+        end
+      end
+    end
+
+    context 'when request unauthenticated' do
+      let(:auth_token) { {} }
+
+      it 'response with failure' do
+        expect(result).to be_failure
+      end
+
+      it 'returns unauthenticated status' do
+        expect(result.failure.status).to eq 401
+      end
+    end
+  end
 end
