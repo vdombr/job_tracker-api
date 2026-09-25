@@ -143,13 +143,7 @@ RSpec.describe Handlers::Users::Handler do
     end
 
     context 'when user authenticated' do
-      let(:user) do
-        User.create(
-          name: 'John Doe',
-          email: 'user@example.com',
-          password_hash: 'abc123'
-        )
-      end
+      let(:user) { create(:user) }
       let(:jwt) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
       let(:headers) do
         { 'Authorization' => jwt }
@@ -209,13 +203,7 @@ RSpec.describe Handlers::Users::Handler do
       let(:password_hash) do
         Services::Users::Utils::HashPassword.new.call('abc123')
       end
-      let(:user) do
-        User.create(
-          name: 'John Doe',
-          email: 'user@example.com',
-          password_hash: password_hash
-        )
-      end
+      let(:user) { create(:user, password_hash: password_hash) }
       let(:input) do
         {
           params: {
