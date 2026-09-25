@@ -34,6 +34,13 @@ RSpec.describe Handlers::JobApps::Handler do
           password_hash: 'abc123'
         )
       end
+      let(:user2) do
+        User.create(
+          name: 'Jane Doe',
+          email: 'j.doe@example.com',
+          password_hash: 'abc123'
+        )
+      end
       let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
 
       context 'with valid params' do
@@ -42,6 +49,9 @@ RSpec.describe Handlers::JobApps::Handler do
         end
         let!(:ghosted_job) do
           create(:job_app, user_id: user.id, current_stage: 'ghosted')
+        end
+        let!(:second_user_job_app) do
+          create(:job_app, user_id: user2.id)
         end
 
         it 'response with success' do
@@ -179,6 +189,140 @@ RSpec.describe Handlers::JobApps::Handler do
                 field: :current_stage,
                 message: ['current_stage must be one of: applied, interviewing, offer, ghosted, rejected']
               }
+            ]
+          )
+        end
+      end
+    end
+
+    context 'when request unauthenticated' do
+      let(:auth_token) { {} }
+
+      it 'response with failure' do
+        expect(result).to be_failure
+      end
+
+      it 'returns unauthenticated status' do
+        expect(result.failure.status).to eq 401
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    let(:result) { subject.send(:create, input) }
+
+    let(:params) { {} }
+    let(:input) do
+      {
+        params: params,
+        context: {
+          headers: {
+            'Authorization' => auth_token
+          }
+        }
+      }
+    end
+
+    context 'when request authenticated' do
+      let(:user) do
+        User.create(
+          name: 'John Doe',
+          email: 'user@example.com',
+          password_hash: 'abc123'
+        )
+      end
+      let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+
+      context 'with valid params' do
+        let(:job_app) { build(:job_app, user_id: user.id) }
+        let(:params) do
+          {
+            company: job_app.company,
+            position: job_app.position,
+            url: job_app.url,
+            hr_contact: job_app.hr_contact,
+            commentary: job_app.commentary,
+            applied_at: job_app.applied_at
+          }
+        end
+
+        it 'response with success' do
+          expect(result).to be_success
+        end
+
+        it 'creates a persistent record for user' do
+          expect { result }.to change(JobApp.where(user_id: user.id), :count).from(0).to(1)
+        end
+
+        it 'returns created status' do
+          expect(result.value!.status).to eq 201
+        end
+
+        it 'returns created job application' do
+          expect(result.value!.body).to include(
+            data: {
+              id: 1,
+              company: job_app.company,
+              position: job_app.position,
+              url: job_app.url,
+              hr_contact: job_app.hr_contact,
+              commentary: job_app.commentary,
+              current_stage: JobApp::INIT_STAGE,
+              applied_at: job_app.applied_at
+            },
+            meta: {}
+          )
+        end
+      end
+
+      context 'with invalid params' do
+        let(:job_app) { build(:job_app) }
+        let(:params) do
+          {
+            company: job_app.company,
+            position: job_app.position,
+            applied_at: 'invalid date'
+          }
+        end
+
+        it 'response with failure' do
+          expect(result).to be_failure
+        end
+
+        it 'returns unprocessable entity status' do
+          expect(result.failure.status).to eq 422
+        end
+
+        it 'returns error' do
+          expect(result.failure.body).to eq(
+            errors: [
+              { field: :applied_at, message: ['applied_at must be a date'] }
+            ]
+          )
+        end
+      end
+
+      context 'with missing params' do
+        let(:job_app) { build(:job_app) }
+        let(:params) do
+          {
+            company: job_app.company,
+            position: job_app.position
+          }
+        end
+
+        it 'response with failure' do
+          expect(result).to be_failure
+        end
+
+        it 'returns unprocessable entity status' do
+          expect(result.failure.status).to eq 422
+        end
+
+        it 'returns error' do
+          expect(result.failure.body).to eq(
+            errors: [
+              { field: :applied_at, message: ['applied_at is missing'] }
             ]
           )
         end

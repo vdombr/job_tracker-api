@@ -7,4 +7,5 @@ Rivulet.routes.draw do
   post '/user',  to: 'users#create'
 
   get   '/job_apps',     to: 'job_apps#index'
+  post  '/job_apps',     to: 'job_apps#create'
 end
