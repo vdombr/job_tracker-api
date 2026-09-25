@@ -5,8 +5,8 @@ module Services
         params do
           required(:resource).value(Types.Value(JobApp)).filled
           required(:attributes).schema do
-            optional(:filter_by).schema do
-              optional(:current_stage).value(Types::Coercible::String).filled
+            optional(:filter).schema do
+              optional(:current_stage).value(Types::Coercible::String, included_in?: JobApp::STAGES).filled
             end
             optional(:paginate).schema do
               optional(:page).value(Types::Coercible::Integer).filled

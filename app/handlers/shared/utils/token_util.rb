@@ -11,7 +11,7 @@ module Handlers
           encoded_token = JWT::EncodedToken.new(token)
           encoded_token.verify!(signature: { algorithm: ENCR_ALGORITHM, key: KEY })
           encoded_token.payload
-        rescue JWT::VerificationError
+        rescue JWT::VerificationError, JWT::Base64DecodeError
           nil
         end
 

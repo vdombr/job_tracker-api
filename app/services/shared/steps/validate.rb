@@ -19,7 +19,7 @@ module Services
                      else
                        errors
                      end
-          messages = [messages[:filter]] if messages.key?(:filter)
+          messages = messages[:filter] if messages.key?(:filter)
           messages.map do |field, msg|
             { field: field, message: msg }
           end

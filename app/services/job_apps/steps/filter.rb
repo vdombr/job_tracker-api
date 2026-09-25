@@ -6,8 +6,8 @@ module Services
           resource, attributes, current_user = input.values_at(:resource, :attributes, :current_user)
 
           resource = resource.where(user_id: current_user)
-          if attributes[:filter_by]
-            resource = current_stage_filter(resource, attributes[:filter_by])
+          if attributes.key? :filter
+            resource = current_stage_filter(resource, attributes[:filter])
           end
 
           Success(input.merge(resource: resource))
