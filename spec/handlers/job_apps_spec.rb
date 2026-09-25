@@ -492,4 +492,66 @@ RSpec.describe Handlers::JobApps::Handler do
       end
     end
   end
+
+  describe 'GET #stats' do
+    let(:result) { subject.send(:stats, input) }
+
+    let(:input) do
+      {
+        params: {},
+        context: {
+          headers: {
+            'Authorization' => auth_token
+          }
+        }
+      }
+    end
+
+    context 'when request authenticated' do
+      let(:user) { create(:user) }
+      let(:user2) { create(:user) }
+
+      let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+
+      before do
+        create(:job_app, user_id: user.id, current_stage: 'applied')
+        create(:job_app, user_id: user.id, current_stage: 'offer')
+        create(:job_app, user_id: user2.id)
+      end
+
+      it 'response with success' do
+        expect(result).to be_success
+      end
+
+      it 'returns ok status' do
+        expect(result.value!.status).to eq 200
+      end
+
+      it 'returns job applications statistics' do
+        expect(result.value!.body.deep_symbolize_keys).to eq(
+          data: {
+            applied: 1,
+            interviewing: 0,
+            offer: 1,
+            ghosted: 0,
+            rejected: 0,
+            total: 2
+          },
+          meta: {}
+        )
+      end
+    end
+
+    context 'when request unauthenticated' do
+      let(:auth_token) { {} }
+
+      it 'response with failure' do
+        expect(result).to be_failure
+      end
+
+      it 'returns unauthenticated status' do
+        expect(result.failure.status).to eq 401
+      end
+    end
+  end
 end

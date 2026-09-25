@@ -8,9 +8,11 @@ module Handlers
         register('create') { Handlers::JobApps::Operations::Create.new }
         register('index')  { Handlers::JobApps::Operations::Index.new }
         register('update') { Handlers::JobApps::Operations::Update.new }
+        register('stats')  { Handlers::JobApps::Operations::Stats.new }
       end
 
       namespace('steps') do
+        register('get_stats')      { Handlers::JobApps::Steps::GetStats.new }
         register('create_job_app') { Handlers::JobApps::Steps::CreateJobApp.new }
         register('list_job_apps')  { Handlers::JobApps::Steps::ListJobApps.new }
         register('update_job_app') { Handlers::JobApps::Steps::UpdateJobApp.new }
