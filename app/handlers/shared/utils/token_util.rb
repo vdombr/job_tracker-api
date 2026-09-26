@@ -6,7 +6,7 @@ module Handlers
       class TokenUtil
         ENCR_ALGORITHM = 'HS256'.freeze
         KEY = 'qwe123'.freeze
-        TOKEN_EXPIRATION_DAYS = 30
+        TOKEN_EXPIRATION_DAYS = 7
 
         def verify(token)
           encoded_token = JWT::EncodedToken.new(token)
@@ -17,7 +17,7 @@ module Handlers
         end
 
         def generate(user_id)
-          payload = { exp: Time.now.to_i + 60, sub: user_id }
+          payload = { exp: Time.now.to_i + TOKEN_EXPIRATION_DAYS * 86_400, sub: user_id }
           header  = { kid: 'hmac' }
 
           token = JWT::Token.new(payload: payload, header: header)
