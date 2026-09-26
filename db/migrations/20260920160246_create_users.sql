@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    id biging PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name varchar NOT NULL,
     email varchar NOT NULL,
     password_hash varchar NOT NULL

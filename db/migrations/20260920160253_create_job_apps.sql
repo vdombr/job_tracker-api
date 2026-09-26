@@ -1,6 +1,6 @@
 CREATE TYPE job_app_stage AS ENUM ('applied', 'interviewing', 'offer', 'ghosted', 'rejected');
 CREATE TABLE job_apps (
-    id biging PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id bigint NOT NULL REFERENCES users(id),
     company varchar NOT NULL,
     position varchar NOT NULL,

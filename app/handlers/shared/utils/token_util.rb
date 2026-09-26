@@ -6,6 +6,7 @@ module Handlers
       class TokenUtil
         ENCR_ALGORITHM = 'HS256'.freeze
         KEY = 'qwe123'.freeze
+        TOKEN_EXPIRATION_DAYS = 30
 
         def verify(token)
           encoded_token = JWT::EncodedToken.new(token)

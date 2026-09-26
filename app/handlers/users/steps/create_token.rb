@@ -9,7 +9,7 @@ module Handlers
         def call(input)
           user_id  = input[:context][:current_user]
           token    = token_util.generate(user_id)
-          response = Rivulet::Response.new(status: 200, body: token.jwt)
+          response = Rivulet::Response.new(status: 200, body: token.jwt, format: :text)
 
           Success(response)
         end
