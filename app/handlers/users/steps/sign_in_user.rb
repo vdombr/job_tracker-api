@@ -22,8 +22,8 @@ module Handlers
             Success(input)
           in Failure[:validation, errors]
             Failure(Rivulet::Response.new(status: 422, body: { errors: errors }))
-          in Failure[:not_found, _]
-            Failure(Rivulet::Response.new(status: 404))
+          in Failure[:not_found, _] | Failure[:unauthenticated, _]
+            Failure(Rivulet::Response.new(status: 401))
           end
         end
       end

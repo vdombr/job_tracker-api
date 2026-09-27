@@ -10,15 +10,15 @@ module Services
           password = input[:attributes][:password]
           hash = input[:resource].password_hash
 
-          return not_found unless verify_password.call(password, hash)
+          return unauthenticated unless verify_password.call(password, hash)
 
           Success(input)
         end
 
         private
 
-        def not_found
-          Failure[:not_found, {}]
+        def unauthenticated
+          Failure[:unauthenticated, {}]
         end
       end
     end

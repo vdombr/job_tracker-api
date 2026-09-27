@@ -239,7 +239,7 @@ RSpec.describe Handlers::Users::Handler do
         end
 
         it 'returns not found status' do
-          expect(result.failure.status).to eq 404
+          expect(result.failure.status).to eq 401
         end
       end
 
@@ -252,7 +252,7 @@ RSpec.describe Handlers::Users::Handler do
         end
 
         it 'returns not found status' do
-          expect(result.failure.status).to eq 404
+          expect(result.failure.status).to eq 401
         end
       end
     end
