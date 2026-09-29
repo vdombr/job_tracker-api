@@ -8,6 +8,7 @@ module Services
               id company position url hr_contact
               commentary current_stage applied_at
             ])
+            map_value(:applied_at, -> date { date.to_s })
           end
         end
       end

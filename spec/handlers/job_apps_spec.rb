@@ -73,7 +73,7 @@ RSpec.describe Handlers::JobApps::Handler do
                 hr_contact: applied_job.hr_contact,
                 commentary: applied_job.commentary,
                 current_stage: applied_job.current_stage,
-                applied_at: applied_job.applied_at
+                applied_at: applied_job.applied_at.to_s
               },
               {
                 id: ghosted_job.id,
@@ -83,7 +83,7 @@ RSpec.describe Handlers::JobApps::Handler do
                 hr_contact: ghosted_job.hr_contact,
                 commentary: ghosted_job.commentary,
                 current_stage: ghosted_job.current_stage,
-                applied_at: ghosted_job.applied_at
+                applied_at: ghosted_job.applied_at.to_s
               }
             ],
             meta: {
@@ -123,7 +123,7 @@ RSpec.describe Handlers::JobApps::Handler do
                   hr_contact: offered_job.hr_contact,
                   commentary: offered_job.commentary,
                   current_stage: offered_job.current_stage,
-                  applied_at: offered_job.applied_at
+                  applied_at: offered_job.applied_at.to_s
                 }
               ],
               meta: {
@@ -242,7 +242,7 @@ RSpec.describe Handlers::JobApps::Handler do
             url: job_app.url,
             hr_contact: job_app.hr_contact,
             commentary: job_app.commentary,
-            applied_at: job_app.applied_at
+            applied_at: job_app.applied_at.to_s
           }
         end
 
@@ -268,7 +268,7 @@ RSpec.describe Handlers::JobApps::Handler do
               hr_contact: job_app.hr_contact,
               commentary: job_app.commentary,
               current_stage: JobApp::INIT_STAGE,
-              applied_at: job_app.applied_at
+              applied_at: job_app.applied_at.to_s
             },
             meta: {}
           )
@@ -398,7 +398,7 @@ RSpec.describe Handlers::JobApps::Handler do
               hr_contact: job_app.hr_contact,
               commentary: job_app.commentary,
               current_stage: job_app.current_stage,
-              applied_at: job_app.applied_at
+              applied_at: job_app.applied_at.to_s
             },
             meta: {}
           )
