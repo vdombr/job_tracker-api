@@ -3,7 +3,7 @@ module Services
     module Steps
       class Filter < Rivulet::Step
         def call(input)
-          resource, attributes, current_user = input.values_at(:resource, :attributes, :current_user)
+          input => { resource:, attributes:, current_user: }
 
           resource = resource.where(user_id: current_user)
           if attributes.key? :filter

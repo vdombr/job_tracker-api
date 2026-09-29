@@ -3,7 +3,7 @@ module Services
     module Steps
       class UpdateJobApp < Rivulet::Step
         def call(input)
-          resource, attributes = input.values_at(:resource, :attributes)
+          input => { resource:, attributes: }
           update_params = attributes.except(:id)
 
           resource = resource

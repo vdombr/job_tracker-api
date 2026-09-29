@@ -3,7 +3,7 @@ module Services
     module Steps
       class LoadUser < Rivulet::Step
         def call(input)
-          resource, attributes = input.values_at(:resource, :attributes)
+          input => { resource:, attributes: }
 
           user = resource.where(attributes[:find_by]).first
           return Failure[:not_found, {}] unless user

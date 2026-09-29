@@ -7,7 +7,7 @@ module Services
         ]
 
         def call(input)
-          resource, attributes = input.values_at(:resource, :attributes)
+          input => { resource:, attributes: }
 
           input[:resource] = resource.create(
             name: attributes[:name],

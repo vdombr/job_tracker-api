@@ -3,7 +3,8 @@ module Services
     module Steps
       class CreateJobApp < Rivulet::Step
         def call(input)
-          resource, attributes = input.values_at(:resource, :attributes)
+          input => { resource:, attributes: }
+
           create_params = attributes.merge(
             user_id: input[:current_user],
             current_stage: JobApp::INIT_STAGE
