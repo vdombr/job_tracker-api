@@ -6,6 +6,7 @@ module Services
           input => { resource:, attributes:, current_user: }
 
           resource = resource.where(user_id: current_user)
+          resource = resource.order(Sequel.desc(:applied_at))
           if attributes.key? :filter
             resource = current_stage_filter(resource, attributes[:filter])
           end
