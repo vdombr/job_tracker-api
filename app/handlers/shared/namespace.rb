@@ -6,7 +6,8 @@ module Handlers
       end
 
       namespace('utils') do
-        register('token_util') { Handlers::Shared::Utils::TokenUtil.new }
+        register('failure_responder') { Handlers::Shared::Utils::FailureResponder.new }
+        register('token_util')        { Handlers::Shared::Utils::TokenUtil.new }
       end
     end
   end

@@ -2,6 +2,10 @@ module Handlers
   module Users
     module Steps
       class GetUser < Rivulet::Step
+        include Import[
+          failure_responder: 'shared.utils.failure_responder'
+        ]
+
         def call(input)
           result = Services[:users].get_user(
             resource: User,
@@ -12,14 +16,9 @@ module Handlers
             }
           )
 
-          case result
-          in Success(data)
-            Success(Rivulet::Response.new(status: 200, body: data))
-          in Failure[:validation, errors]
-            Failure(Rivulet::Response.new(status: 422, body: { errors: errors }))
-          in Failure[:not_found, _]
-            Failure(Rivulet::Response.new(status: 404))
-          end
+          return failure_responder.call(result) if result.failure?
+
+          Success(Rivulet::Response.new(status: 200, body: result.value!))
         end
       end
     end
