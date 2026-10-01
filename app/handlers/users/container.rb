@@ -11,10 +11,11 @@ module Handlers
       end
 
       namespace('steps') do
-        register('create_user')  { Handlers::Users::Steps::CreateUser.new }
-        register('create_token') { Handlers::Users::Steps::CreateToken.new }
-        register('get_user')     { Handlers::Users::Steps::GetUser.new }
-        register('sign_in_user') { Handlers::Users::Steps::SignInUser.new }
+        register('create_user')     { Handlers::Users::Steps::CreateUser.new }
+        register('create_token')    { Handlers::Users::Steps::CreateToken.new }
+        register('get_user')        { Handlers::Users::Steps::GetUser.new }
+        register('sign_in_user')    { Handlers::Users::Steps::SignInUser.new }
+        register('respond_success') { Handlers::Users::Steps::RespondSuccess.new }
       end
     end
   end

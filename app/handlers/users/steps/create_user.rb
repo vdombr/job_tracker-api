@@ -2,20 +2,24 @@ module Handlers
   module Users
     module Steps
       class CreateUser < Rivulet::Step
+        include Import[
+          failure_responder: 'shared.utils.failure_responder'
+        ]
+
         def call(input)
           result = Services[:users].create_user(
             resource: User,
             attributes: input[:params]
           )
 
-          case result
-          in Success(data)
-            Success(Rivulet::Response.new(status: 201, body: data))
-          in Failure[:validation, errors]
-            Failure(Rivulet::Response.new(status: 422, body: { errors: errors }))
-          in Failure[:conflict, _]
-            Failure(Rivulet::Response.new(status: 409, body: { errors: 'This email already exists' }))
-          end
+          return failure_responder.call(result) if result.failure?
+
+          input[:context].merge!(
+            current_user: result.value![:data],
+            action: :create
+          )
+
+          Success(input)
         end
       end
     end

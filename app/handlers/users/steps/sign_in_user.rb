@@ -17,7 +17,7 @@ module Handlers
 
           case result
           in Success(data)
-            input[:context][:current_user] = data[:data][:id]
+            input[:context][:current_user] = data[:data]
 
             Success(input)
           in Failure[:validation, errors]

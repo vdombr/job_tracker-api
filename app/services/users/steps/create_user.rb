@@ -17,7 +17,9 @@ module Services
 
           Success(input)
         rescue Sequel::UniqueConstraintViolation => e
-          Failure[:conflict, e.message]
+          key, msg = e.message.match('Key \((\w+)\)=\([a-zA-Z@.]+\) ([\w\s]+)').captures
+
+          Failure[:conflict, [{ field: key, message: [msg] }]]
         end
       end
     end

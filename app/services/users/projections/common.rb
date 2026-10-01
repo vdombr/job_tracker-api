@@ -3,7 +3,7 @@ module Services
     module Projections
       class Common < Rivulet::Projection
         define! do
-          accept_keys(%i[name email])
+          accept_keys(%i[id name email])
         end
       end
     end

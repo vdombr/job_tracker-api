@@ -36,12 +36,12 @@ RSpec.describe Handlers::Users::Handler do
         end
 
         it 'returns created user' do
-          expect(result.value!.body).to eq(
+          expect(result.value!.body).to include(
             data: {
+              id: 1,
               name: 'John Doe',
               email: 'user@example.com'
-            },
-            meta: {}
+            }
           )
         end
       end
@@ -65,7 +65,9 @@ RSpec.describe Handlers::Users::Handler do
 
         it 'retuns error message' do
           expect(result.failure.body).to include(
-            errors: 'This email already exists'
+            errors: [
+              { field: 'email', message: ['already exists'] }
+            ]
           )
         end
       end
@@ -160,6 +162,7 @@ RSpec.describe Handlers::Users::Handler do
       it 'returns user data' do
         expect(result.value!.body).to eq(
           data: {
+            id: user.id,
             name: user.name,
             email: user.email
           },

@@ -7,11 +7,14 @@ module Handlers
         ]
 
         def call(input)
-          user_id  = input[:context][:current_user]
-          token    = token_util.generate(user_id)
-          response = Rivulet::Response.new(status: 200, body: token.jwt, format: :text)
+          user  = input[:context][:current_user]
+          token    = token_util.generate(user[:id])
 
-          Success(response)
+          input[:context][:token] = {
+            access_token: token.jwt, token_type: 'Bearer', expires_in: token.payload[:exp]
+          }
+
+          Success(input)
         end
       end
     end

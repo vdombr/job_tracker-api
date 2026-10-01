@@ -8,7 +8,7 @@ module Services
           load_user: 'steps.load_user',
           verify_password: 'steps.verify_password',
           present: 'shared.steps.present',
-          projection: 'projections.sign_in_user'
+          projection: 'projections.common'
         ]
 
         def call(input = {})
