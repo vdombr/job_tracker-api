@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rivulet-rb'
 gem 'rivulet-opentelemetry'
-gem 'falcon'
+gem 'falcon', '0.57.0'
 gem 'jwt'
 gem 'pg'
 

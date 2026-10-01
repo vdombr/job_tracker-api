@@ -225,7 +225,7 @@ GEM
     protocol-http (0.72.0)
     protocol-http1 (0.41.0)
       protocol-http (~> 0.68)
-    protocol-http2 (0.28.0)
+    protocol-http2 (0.29.1)
       protocol-hpack (~> 1.4)
       protocol-http (~> 0.62)
     protocol-rack (0.23.0)
@@ -299,7 +299,7 @@ DEPENDENCIES
   database_cleaner-sequel
   factory_bot
   faker
-  falcon
+  falcon (= 0.57.0)
   jwt
   pg
   pry
