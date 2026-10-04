@@ -8,6 +8,7 @@ module Services
             optional(:filter).schema do
               optional(:current_stage).value(Types::Coercible::String, included_in?: JobApp::STAGES).filled
             end
+            optional(:search).value(Types::Coercible::String).filled
             optional(:paginate).schema do
               optional(:page).value(Types::Coercible::Integer).filled
               optional(:limit).value(Types::Coercible::Integer).filled

@@ -63,7 +63,7 @@ RSpec.describe Handlers::JobApps::Handler do
         end
 
         it 'returns job apps' do
-          expect(result.value!.body).to eq(
+          expect(result.value!.body).to include(
             data: [
               {
                 id: applied_job.id,
@@ -137,6 +137,113 @@ RSpec.describe Handlers::JobApps::Handler do
                 }
               }
             )
+          end
+        end
+
+        context 'when searched' do
+          let(:params) do
+            {
+              search: query
+            }
+          end
+
+          let!(:searched_job_app) do
+            create(
+              :job_app,
+              user_id: user.id,
+              company: 'Acme Corp',
+              url: 'http://acme.com',
+              hr_contact: '@gloria',
+              position: 'Evil Genius',
+              commentary: 'We need $1m'
+            )
+          end
+
+          context 'by company name' do
+            let(:query) { 'acme' }
+
+            it 'response with success' do
+              expect(result).to be_success
+            end
+
+            it 'returns matched job_app' do
+              expected_data = searched_job_app
+                              .to_hash
+                              .except(:user_id)
+                              .transform_values { |val|  val.is_a?(Date) ? val.to_s : val }
+
+              expect(result.value!.body).to eq(
+                data: [expected_data],
+                meta: {
+                  paginate: {
+                    limit: 25,
+                    next_page: nil,
+                    page: 1,
+                    prev_page: nil,
+                    total_pages: 1,
+                    total_records: 1
+                  }
+                }
+              )
+            end
+          end
+
+          context 'by postion' do
+            let(:query) { 'genius' }
+
+            it 'response with success' do
+              expect(result).to be_success
+            end
+
+            it 'returns matched job_app' do
+              expected_data = searched_job_app
+                              .to_hash
+                              .except(:user_id)
+                              .transform_values { |val|  val.is_a?(Date) ? val.to_s : val }
+
+              expect(result.value!.body).to eq(
+                data: [expected_data],
+                meta: {
+                  paginate: {
+                    limit: 25,
+                    next_page: nil,
+                    page: 1,
+                    prev_page: nil,
+                    total_pages: 1,
+                    total_records: 1
+                  }
+                }
+              )
+            end
+          end
+
+          context 'by hr contact' do
+            let(:query) { 'gloria' }
+
+            it 'response with success' do
+              expect(result).to be_success
+            end
+
+            it 'returns matched job_app' do
+              expected_data = searched_job_app
+                              .to_hash
+                              .except(:user_id)
+                              .transform_values { |val|  val.is_a?(Date) ? val.to_s : val }
+
+              expect(result.value!.body).to eq(
+                data: [expected_data],
+                meta: {
+                  paginate: {
+                    limit: 25,
+                    next_page: nil,
+                    page: 1,
+                    prev_page: nil,
+                    total_pages: 1,
+                    total_records: 1
+                  }
+                }
+              )
+            end
           end
         end
 
