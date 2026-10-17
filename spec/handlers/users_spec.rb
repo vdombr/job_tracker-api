@@ -146,7 +146,8 @@ RSpec.describe Handlers::Users::Handler do
 
     context 'when user authenticated' do
       let(:user) { create(:user) }
-      let(:jwt) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+      let(:token_key) { Rivulet.config.params.token_key }
+      let(:jwt) { JWT.encode({ sub: user.id }, token_key, 'HS256') }
       let(:headers) do
         { 'Authorization' => jwt }
       end

@@ -5,12 +5,11 @@ module Handlers
     module Utils
       class TokenUtil
         ENCR_ALGORITHM = 'HS256'.freeze
-        KEY = 'qwe123'.freeze
         TOKEN_EXPIRATION_DAYS = 7
 
         def verify(token)
           encoded_token = JWT::EncodedToken.new(token)
-          encoded_token.verify!(signature: { algorithm: ENCR_ALGORITHM, key: KEY })
+          encoded_token.verify!(signature: { algorithm: ENCR_ALGORITHM, key: token_key })
           encoded_token.payload
         rescue JWT::VerificationError, JWT::Base64DecodeError
           nil
@@ -21,9 +20,15 @@ module Handlers
           header  = { kid: 'hmac' }
 
           token = JWT::Token.new(payload: payload, header: header)
-          token.sign!(algorithm: ENCR_ALGORITHM, key: KEY)
+          token.sign!(algorithm: ENCR_ALGORITHM, key: token_key)
 
           token
+        end
+
+        private
+
+        def token_key
+          Rivulet.config.params.token_key
         end
       end
     end

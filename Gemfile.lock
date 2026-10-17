@@ -108,6 +108,7 @@ GEM
       dry-initializer (~> 3.2)
       dry-schema (~> 1.14)
       zeitwerk (~> 2.6)
+    erb (6.0.7)
     factory_bot (6.6.0)
       activesupport (>= 6.1.0)
     faker (3.8.0)
@@ -142,7 +143,12 @@ GEM
     io-event (1.22.1)
     io-stream (0.14.0)
       openssl (>= 3.3)
-    json (3.0.2)
+    irb (1.18.0)
+      pp (>= 0.6.0)
+      prism (>= 1.3.0)
+      rdoc (>= 4.0.0)
+      reline (>= 0.4.2)
+    json (3.1.0)
     jwt (3.3.0)
       base64
     localhost (1.8.0)
@@ -152,61 +158,66 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
-    oj (3.17.6)
+    oj (3.17.7)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     openssl (4.0.2)
     opentelemetry-api (1.11.1)
       logger
-    opentelemetry-common (0.25.1)
+    opentelemetry-common (0.25.2)
       opentelemetry-api (~> 1.0)
-    opentelemetry-exporter-otlp (0.36.0)
+    opentelemetry-exporter-otlp (0.37.0)
       google-protobuf (>= 3.18)
       googleapis-common-protos-types (~> 1.3)
       opentelemetry-api (~> 1.1)
       opentelemetry-common (~> 0.20)
-      opentelemetry-exporter-otlp-common
+      opentelemetry-exporter-otlp-common (~> 0.2)
       opentelemetry-sdk (~> 1.10)
       opentelemetry-semantic_conventions
-    opentelemetry-exporter-otlp-common (0.2.0)
-      google-protobuf (>= 3.18)
-      googleapis-common-protos-types (~> 1.3)
-      opentelemetry-api (~> 1.1)
-    opentelemetry-exporter-otlp-logs (0.5.1)
+    opentelemetry-exporter-otlp-common (0.4.0)
       google-protobuf (>= 3.18)
       googleapis-common-protos-types (~> 1.3)
       opentelemetry-api (~> 1.1)
       opentelemetry-common (~> 0.20)
+    opentelemetry-exporter-otlp-logs (0.7.0)
+      google-protobuf (>= 3.18)
+      googleapis-common-protos-types (~> 1.3)
+      opentelemetry-api (~> 1.1)
+      opentelemetry-common (~> 0.20)
+      opentelemetry-exporter-otlp-common (~> 0.2)
       opentelemetry-logs-api (~> 0.1)
       opentelemetry-logs-sdk (~> 0.1)
       opentelemetry-sdk
       opentelemetry-semantic_conventions
-    opentelemetry-exporter-otlp-metrics (0.12.0)
+    opentelemetry-exporter-otlp-metrics (0.14.0)
       google-protobuf (>= 3.18, < 5.0)
       googleapis-common-protos-types (~> 1.3)
       opentelemetry-api (~> 1.1)
       opentelemetry-common (~> 0.20)
+      opentelemetry-exporter-otlp-common (~> 0.2)
       opentelemetry-metrics-api (~> 0.2)
       opentelemetry-metrics-sdk (~> 0.5)
       opentelemetry-sdk (~> 1.2)
       opentelemetry-semantic_conventions
-    opentelemetry-instrumentation-base (0.26.1)
+    opentelemetry-instrumentation-base (0.27.0)
       opentelemetry-api (~> 1.7)
       opentelemetry-common (~> 0.21)
+      opentelemetry-logs-api (~> 0.6)
+      opentelemetry-metrics-api (~> 0.9)
       opentelemetry-registry (~> 0.1)
-    opentelemetry-instrumentation-rack (0.31.1)
+    opentelemetry-instrumentation-rack (0.31.2)
       opentelemetry-instrumentation-base (~> 0.25)
-    opentelemetry-logs-api (0.5.0)
+    opentelemetry-logs-api (0.7.0)
       opentelemetry-api (~> 1.0)
-    opentelemetry-logs-sdk (0.6.1)
+    opentelemetry-logs-sdk (0.8.1)
       opentelemetry-api (~> 1.2)
-      opentelemetry-logs-api (~> 0.1)
+      opentelemetry-logs-api (~> 0.7.0)
       opentelemetry-sdk (~> 1.3)
-    opentelemetry-metrics-api (0.7.1)
+    opentelemetry-metrics-api (0.10.0)
       opentelemetry-api (~> 1.0)
-    opentelemetry-metrics-sdk (0.18.0)
+    opentelemetry-metrics-sdk (0.21.0)
       opentelemetry-api (~> 1.1)
-      opentelemetry-metrics-api (~> 0.2)
+      opentelemetry-metrics-api (~> 0.10.0)
       opentelemetry-sdk (~> 1.13.0)
     opentelemetry-registry (0.6.3)
       opentelemetry-api (~> 1.1)
@@ -219,7 +230,10 @@ GEM
     opentelemetry-semantic_conventions (1.44.0)
       opentelemetry-api (~> 1.0)
     ostruct (0.6.3)
-    pg (1.6.3-aarch64-linux-musl)
+    pg (1.7.0-aarch64-linux-musl)
+    pp (0.6.4)
+      prettyprint
+    prettyprint (0.2.1)
     prism (1.9.0)
     protocol-hpack (1.5.1)
     protocol-http (0.72.0)
@@ -240,6 +254,15 @@ GEM
       reline (>= 0.6.0)
     rack (3.2.7)
     rake (13.4.2)
+    rbs (4.2.0)
+      logger
+      prism (>= 1.6.0)
+      tsort
+    rdoc (8.1.0)
+      erb
+      prism (>= 1.6.0)
+      rbs (>= 4.0.0)
+      tsort
     reline (0.7.0)
       io-console (~> 0.5)
     rivulet-opentelemetry (0.2.0)
@@ -252,7 +275,7 @@ GEM
       opentelemetry-metrics-sdk
       opentelemetry-sdk
       rivulet-rb (>= 0.3.0)
-    rivulet-rb (0.3.1)
+    rivulet-rb (0.3.2)
       dry-auto_inject
       dry-cli
       dry-configurable
@@ -263,6 +286,7 @@ GEM
       dry-operation
       dry-transformer
       dry-validation
+      irb
       oj
       protocol-http
       rack
@@ -284,12 +308,13 @@ GEM
     samovar (2.5.1)
       console (~> 1.0)
     securerandom (0.4.1)
-    sequel (5.108.0)
+    sequel (5.109.0)
       bigdecimal
     string-format (0.2.0)
+    tsort (0.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    uri (1.1.1)
+    uri (1.1.2)
     zeitwerk (2.8.3)
 
 PLATFORMS

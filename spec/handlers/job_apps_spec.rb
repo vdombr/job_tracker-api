@@ -11,6 +11,8 @@ RSpec.describe Handlers::JobApps::Handler do
     DatabaseCleaner[:sequel].clean
   end
 
+  let(:token_key) { Rivulet.config.params.token_key }
+
   describe 'GET #index' do
     let(:result) { subject.send(:index, input) }
 
@@ -41,7 +43,7 @@ RSpec.describe Handlers::JobApps::Handler do
           password_hash: 'abc123'
         )
       end
-      let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+      let(:auth_token) { JWT.encode({ sub: user.id }, token_key, 'HS256') }
 
       context 'with valid params' do
         let!(:applied_job) do
@@ -338,7 +340,7 @@ RSpec.describe Handlers::JobApps::Handler do
           password_hash: 'abc123'
         )
       end
-      let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+      let(:auth_token) { JWT.encode({ sub: user.id }, token_key, 'HS256') }
 
       context 'with valid params' do
         let(:job_app) { build(:job_app, user_id: user.id) }
@@ -472,7 +474,7 @@ RSpec.describe Handlers::JobApps::Handler do
           password_hash: 'abc123'
         )
       end
-      let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+      let(:auth_token) { JWT.encode({ sub: user.id }, token_key, 'HS256') }
 
       context 'with valid params' do
         let(:job_app) { create(:job_app, user_id: user.id) }
@@ -618,7 +620,7 @@ RSpec.describe Handlers::JobApps::Handler do
       let(:user) { create(:user) }
       let(:user2) { create(:user) }
 
-      let(:auth_token) { JWT.encode({ sub: user.id }, 'qwe123', 'HS256') }
+      let(:auth_token) { JWT.encode({ sub: user.id }, token_key, 'HS256') }
 
       before do
         create(:job_app, user_id: user.id, current_stage: 'applied')
